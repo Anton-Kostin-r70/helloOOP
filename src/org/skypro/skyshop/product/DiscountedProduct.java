@@ -3,6 +3,7 @@ package org.skypro.skyshop.product;
 public class DiscountedProduct extends Product {
     private int basePrice;
     private int discountedPercent;
+    private static final String DISCOUNTED_PRODUCT = "DISCOUNTED_PRODUCT";
 
     public DiscountedProduct(String title, int basePrice, int discountedPercent) {
         super(title);
@@ -11,6 +12,7 @@ public class DiscountedProduct extends Product {
             throw new IllegalArgumentException("Скидочный процент внесен не корректно 0..100%");
         }
         this.discountedPercent = discountedPercent;
+        product = DISCOUNTED_PRODUCT;
     }
 
     @Override
