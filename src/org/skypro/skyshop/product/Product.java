@@ -1,22 +1,20 @@
 package org.skypro.skyshop.product;
 
-public class Product {
+public abstract class Product {
     private String title;
-    private int price;
 
-    public Product(String title, int price) {
-        if (price <= 0 || title == null) {
+    public abstract boolean isSpecial();
+
+    public Product(String title) {
+        if (title == null || title.trim().length() == 0) {
             throw new IllegalArgumentException("Проверьте вносимые сведения о товаре");
         }
-        this.title = title;
-        this.price = price;
-    }
-
-    public int getPrice() {
-        return price;
+        this.title = title.trim();
     }
 
     public String getTitle() {
         return title;
     }
+
+    public abstract int getPrice();
 }

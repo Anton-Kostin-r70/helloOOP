@@ -25,13 +25,14 @@ public class ProductBasket {
 
     public void printCheck() {
         if (numberOfProducts == 0) {
-            System.out.println("в корзине пусто");
+            System.out.println("В корзине пусто");
             return;
         }
         for (int i = 0; i < numberOfProducts; i++) {
-            System.out.println("<" + productList[i].getTitle() + ">:\t<" + productList[i].getPrice() + ">");
+            System.out.println(productList[i].toString());
         }
-        System.out.println("Итого: <" + getCostProducts() + ">");
+        System.out.println("Итого: " + getCostProducts());
+        System.out.println("Специальных товаров:\t" + getQuantitySpecialGoods());
     }
 
     public boolean isProduct(String title) {
@@ -48,5 +49,15 @@ public class ProductBasket {
             productList[i] = null;
         }
         numberOfProducts = 0;
+    }
+
+    private int getQuantitySpecialGoods() {
+        int count = 0;
+        for (Product p : productList) {
+            if (p.isSpecial()) {
+                count++;
+            }
+        }
+        return count;
     }
 }
