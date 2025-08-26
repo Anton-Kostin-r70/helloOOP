@@ -43,6 +43,7 @@ public class Article implements Searchable {
     public String getProductName() {
         return getTitle();
     }
+
     public String getStringRepresentation() {
         return getTitle() + " - " + ARTICLE;
     }
