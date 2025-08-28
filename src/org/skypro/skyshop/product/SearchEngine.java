@@ -1,5 +1,7 @@
 package org.skypro.skyshop.product;
 
+import org.skypro.skyshop.exception.BestResultNotFound;
+
 public class SearchEngine {
     private Searchable[] searchMas;
 
@@ -30,5 +32,22 @@ public class SearchEngine {
             }
         }
         return false;
+    }
+
+    //frequency-semantic analysis was used
+    public Searchable getBestResult(String search) throws BestResultNotFound {
+        int maxWeight = 0;
+        Searchable result = null;
+        for (int i = 0; searchMas[i] != null && i < searchMas.length; i++) {
+            int weight = searchMas[i].getSeachTerm(search).split(search, -1).length - 1;
+            if (maxWeight <= weight && weight > 0) {
+                maxWeight = weight;
+                result = searchMas[i];
+            }
+        }
+        if (result == null) {
+            throw new BestResultNotFound("Не нашлось подходящей статьи");
+        }
+        return result;
     }
 }

@@ -7,7 +7,7 @@ public abstract class Product implements Searchable {
     public abstract boolean isSpecial();
 
     public Product(String title) {
-        if (title == null || title.trim().length() == 0) {
+        if (title == null || title.isBlank()) {
             throw new IllegalArgumentException("Проверьте вносимые сведения о товаре");
         }
         this.title = title.trim();

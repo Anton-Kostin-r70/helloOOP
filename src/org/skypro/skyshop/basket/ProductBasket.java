@@ -54,7 +54,7 @@ public class ProductBasket {
     private int getQuantitySpecialGoods() {
         int count = 0;
         for (Product p : productList) {
-            if (p.isSpecial()) {
+            if (p != null && p.isSpecial()) {
                 count++;
             }
         }

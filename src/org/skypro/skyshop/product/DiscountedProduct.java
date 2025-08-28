@@ -7,10 +7,13 @@ public class DiscountedProduct extends Product {
 
     public DiscountedProduct(String title, int basePrice, int discountedPercent) {
         super(title);
-        this.basePrice = basePrice;
-        if (discountedPercent <= 0 || discountedPercent >= 100) {
+        if (basePrice <= 0) {
+            throw new IllegalArgumentException("Базовая стоимость не может быть отрицательной или равной нулю>");
+        }
+        if (discountedPercent < 0 || discountedPercent > 100) {
             throw new IllegalArgumentException("Скидочный процент внесен не корректно 0..100%");
         }
+        this.basePrice = basePrice;
         this.discountedPercent = discountedPercent;
         product = DISCOUNTED_PRODUCT;
     }
