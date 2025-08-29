@@ -7,19 +7,20 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class ProductBasket {
-    private List productList;
+    private List<Product> productList;
 
     public ProductBasket() {
         productList = new LinkedList<Product>();
     }
+
     public void addProduct(Product product) {
         productList.add(product);
     }
 
     public int getCostProducts() {
         int result = 0;
-        for (Object p : productList) {
-            result += ((Product)p).getPrice();
+        for (Product p : productList) {
+            result += p.getPrice();
         }
         return result;
     }
@@ -29,16 +30,16 @@ public class ProductBasket {
             System.out.println("В корзине пусто");
             return;
         }
-        for (Object p : productList) {
-            System.out.println(((Product)p).toString());
+        for (Product p : productList) {
+            System.out.println(p.toString());
         }
         System.out.println("Итого: " + getCostProducts());
         System.out.println("Специальных товаров:\t" + getQuantitySpecialGoods());
     }
 
     public boolean isProduct(String title) {
-        for (Object p : productList) {
-            if (((Product)p).getTitle().equals(title)) {
+        for (Product p : productList) {
+            if (p.getTitle().equals(title)) {
                 return true;
             }
         }
@@ -51,8 +52,8 @@ public class ProductBasket {
 
     private int getQuantitySpecialGoods() {
         int count = 0;
-        for (Object p : productList) {
-            if (p != null && ((Product)p).isSpecial()) {
+        for (Product p : productList) {
+            if (p != null && p.isSpecial()) {
                 count++;
             }
         }
@@ -62,7 +63,7 @@ public class ProductBasket {
     public List<Product> delProducts(String name) {
         List<Product> result = new LinkedList<Product>();
         Iterator<Product> itr = productList.iterator();
-        while(itr.hasNext()) {
+        while (itr.hasNext()) {
             Product p = itr.next();
             if (p.getTitle().equals(name)) {
                 result.add(p);
