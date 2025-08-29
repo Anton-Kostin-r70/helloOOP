@@ -38,7 +38,7 @@ public class SearchEngine {
         int maxWeight = 0;
         Searchable result = null;
         Iterator<Searchable> itr = searchMas.iterator();
-        while(itr.hasNext()) {
+        while (itr.hasNext()) {
             Searchable s = (Searchable) itr.next();
             int weight = s.getSeachTerm(search).split(search, -1).length - 1;
             if (maxWeight <= weight && weight > 0) {

@@ -5,7 +5,6 @@ import org.skypro.skyshop.description.Article;
 import org.skypro.skyshop.exception.BestResultNotFound;
 import org.skypro.skyshop.product.*;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class App {
