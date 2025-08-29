@@ -2,34 +2,33 @@ package org.skypro.skyshop.product;
 
 import org.skypro.skyshop.exception.BestResultNotFound;
 
-public class SearchEngine {
-    private Searchable[] searchMas;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
-    public SearchEngine(int count) {
-        searchMas = new Searchable[count];
+public class SearchEngine {
+    private List<Searchable> searchMas;
+
+    public SearchEngine() {
+        searchMas = new ArrayList<Searchable>();
     }
 
-    public Searchable[] search(String str) {
-        Searchable[] result = new Searchable[5];
-        int index = 0;
-        for (int i = 0; i < searchMas.length && searchMas[i] != null; i++) {
-            if (index == 5) {
-                break;
-            }
-            if (searchMas[i].getSeachTerm(str).contains(str)) {
-                result[index] = searchMas[i];
-                index++;
+    public List<Searchable> search(String str) {
+        List<Searchable> result = new ArrayList<Searchable>();
+        Iterator itr = searchMas.iterator();
+        while (itr.hasNext()) {
+            Searchable s = (Searchable) itr.next();
+            if (s.getSeachTerm(str).contains(str)) {
+                result.add(s);
             }
         }
         return result;
     }
 
     public boolean add(Searchable o) {
-        for (int i = 0; i < searchMas.length; i++) {
-            if (searchMas[i] == null && o != null) {
-                searchMas[i] = o;
-                return true;
-            }
+        if (o != null) {
+            searchMas.add(o);
+            return true;
         }
         return false;
     }
@@ -38,11 +37,13 @@ public class SearchEngine {
     public Searchable getBestResult(String search) throws BestResultNotFound {
         int maxWeight = 0;
         Searchable result = null;
-        for (int i = 0; searchMas[i] != null && i < searchMas.length; i++) {
-            int weight = searchMas[i].getSeachTerm(search).split(search, -1).length - 1;
+        Iterator<Searchable> itr = searchMas.iterator();
+        while(itr.hasNext()) {
+            Searchable s = (Searchable) itr.next();
+            int weight = s.getSeachTerm(search).split(search, -1).length - 1;
             if (maxWeight <= weight && weight > 0) {
                 maxWeight = weight;
-                result = searchMas[i];
+                result = s;
             }
         }
         if (result == null) {
