@@ -2,24 +2,22 @@ package org.skypro.skyshop.product;
 
 import org.skypro.skyshop.exception.BestResultNotFound;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class SearchEngine {
-    private List<Searchable> searchMas;
+    private Map<String, Searchable> searchMas;
 
     public SearchEngine() {
-        searchMas = new ArrayList<Searchable>();
+        searchMas = new TreeMap<>();
     }
 
-    public List<Searchable> search(String str) {
-        List<Searchable> result = new ArrayList<Searchable>();
-        Iterator itr = searchMas.iterator();
+    public TreeMap<String, Searchable> search(String str) {
+        TreeMap<String, Searchable> result = new TreeMap<>();
+        Iterator<String> itr = searchMas.keySet().iterator();
         while (itr.hasNext()) {
-            Searchable s = (Searchable) itr.next();
+            Searchable s = searchMas.get(itr.next());
             if (s.getSeachTerm(str).contains(str)) {
-                result.add(s);
+                result.put(s.getProductName(), s);
             }
         }
         return result;
@@ -27,7 +25,7 @@ public class SearchEngine {
 
     public boolean add(Searchable o) {
         if (o != null) {
-            searchMas.add(o);
+            searchMas.put(o.getProductName(), o);
             return true;
         }
         return false;
@@ -37,9 +35,9 @@ public class SearchEngine {
     public Searchable getBestResult(String search) throws BestResultNotFound {
         int maxWeight = 0;
         Searchable result = null;
-        Iterator<Searchable> itr = searchMas.iterator();
+        Iterator<String> itr = searchMas.keySet().iterator();
         while (itr.hasNext()) {
-            Searchable s = (Searchable) itr.next();
+            Searchable s = searchMas.get(itr.next());
             int weight = s.getSeachTerm(search).split(search, -1).length - 1;
             if (maxWeight <= weight && weight > 0) {
                 maxWeight = weight;

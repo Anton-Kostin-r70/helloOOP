@@ -2,25 +2,25 @@ package org.skypro.skyshop.basket;
 
 import org.skypro.skyshop.product.Product;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class ProductBasket {
-    private List<Product> productList;
+    private Map<String, List<Product>> productList;
 
     public ProductBasket() {
-        productList = new LinkedList<Product>();
+        productList = new HashMap<>();
     }
 
     public void addProduct(Product product) {
-        productList.add(product);
+        productList.computeIfAbsent(product.getTitle(), k -> new ArrayList<>()).add(product);
     }
 
     public int getCostProducts() {
         int result = 0;
-        for (Product p : productList) {
-            result += p.getPrice();
+        for (String k : productList.keySet()) {
+            for (Product p : productList.get(k)) {
+                result += p.getPrice();
+            }
         }
         return result;
     }
@@ -30,17 +30,21 @@ public class ProductBasket {
             System.out.println("В корзине пусто");
             return;
         }
-        for (Product p : productList) {
-            System.out.println(p.toString());
+        for (String k : productList.keySet()) {
+            for (Product p : productList.get(k)) {
+                System.out.println(p.toString());
+            }
         }
         System.out.println("Итого: " + getCostProducts());
         System.out.println("Специальных товаров:\t" + getQuantitySpecialGoods());
     }
 
     public boolean isProduct(String title) {
-        for (Product p : productList) {
-            if (p.getTitle().equals(title)) {
-                return true;
+        for (String k : productList.keySet()) {
+            for (Product p : productList.get(k)) {
+                if (p.getTitle().equals(title)) {
+                    return true;
+                }
             }
         }
         return false;
@@ -52,9 +56,11 @@ public class ProductBasket {
 
     private int getQuantitySpecialGoods() {
         int count = 0;
-        for (Product p : productList) {
-            if (p != null && p.isSpecial()) {
-                count++;
+        for (String k : productList.keySet()) {
+            for (Product p : productList.get(k)) {
+                if (p != null && p.isSpecial()) {
+                    count++;
+                }
             }
         }
         return count;
@@ -62,12 +68,14 @@ public class ProductBasket {
 
     public List<Product> delProducts(String name) {
         List<Product> result = new LinkedList<Product>();
-        Iterator<Product> itr = productList.iterator();
-        while (itr.hasNext()) {
-            Product p = itr.next();
-            if (p.getTitle().equals(name)) {
-                result.add(p);
-                productList.remove(p);
+        if (productList.containsKey(name)) {
+            Iterator<Product> itr = (productList.get(name)).iterator();
+            while (itr.hasNext()) {
+                Product p = itr.next();
+                if (p.getTitle().equals(name)) {
+                    result.add(p);
+                    productList.remove(p);
+                }
             }
         }
         return result;
