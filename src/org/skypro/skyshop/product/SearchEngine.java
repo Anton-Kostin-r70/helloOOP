@@ -1,23 +1,37 @@
 package org.skypro.skyshop.product;
 
+import org.skypro.skyshop.description.Article;
 import org.skypro.skyshop.exception.BestResultNotFound;
 
 import java.util.*;
 
 public class SearchEngine {
-    private Map<String, Searchable> searchMas;
+    private Set<Searchable> searchMas;
 
     public SearchEngine() {
-        searchMas = new TreeMap<>();
+        searchMas = new HashSet<>();
     }
 
-    public TreeMap<String, Searchable> search(String str) {
-        TreeMap<String, Searchable> result = new TreeMap<>();
-        Iterator<String> itr = searchMas.keySet().iterator();
+    public Set<Searchable> search(String str) {
+        Set<Searchable> result = new TreeSet<Searchable>(
+                new Comparator() {
+                    public int compare(Object a, Object b) {
+                        Searchable a1 = (Searchable) a;
+                        Searchable b1 = (Searchable) b;
+                        if (a1.getClass() == b1.getClass() && Objects.equals(a1.getContentType(), "ARTICLE")) {
+                            if (Integer.compare(a1.getProductName().length(), b1.getProductName().length()) == 0) {
+                                return a1.getProductName().compareTo(b1.getProductName());
+                            }
+                        }
+                        return Integer.compare(b1.getProductName().length(), a1.getProductName().length());
+                    }
+                }
+        );
+        Iterator<Searchable> itr = searchMas.iterator();
         while (itr.hasNext()) {
-            Searchable s = searchMas.get(itr.next());
+            Searchable s = itr.next();
             if (s.getSeachTerm(str).contains(str)) {
-                result.put(s.getProductName(), s);
+                result.add(s);
             }
         }
         return result;
@@ -25,7 +39,7 @@ public class SearchEngine {
 
     public boolean add(Searchable o) {
         if (o != null) {
-            searchMas.put(o.getProductName(), o);
+            searchMas.add(o);
             return true;
         }
         return false;
@@ -35,9 +49,9 @@ public class SearchEngine {
     public Searchable getBestResult(String search) throws BestResultNotFound {
         int maxWeight = 0;
         Searchable result = null;
-        Iterator<String> itr = searchMas.keySet().iterator();
+        Iterator<Searchable> itr = searchMas.iterator();
         while (itr.hasNext()) {
-            Searchable s = searchMas.get(itr.next());
+            Searchable s = itr.next();
             int weight = s.getSeachTerm(search).split(search, -1).length - 1;
             if (maxWeight <= weight && weight > 0) {
                 maxWeight = weight;
