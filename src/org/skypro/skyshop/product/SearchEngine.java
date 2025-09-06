@@ -13,20 +13,7 @@ public class SearchEngine {
     }
 
     public Set<Searchable> search(String str) {
-        Set<Searchable> result = new TreeSet<Searchable>(
-                new Comparator() {
-                    public int compare(Object a, Object b) {
-                        Searchable a1 = (Searchable) a;
-                        Searchable b1 = (Searchable) b;
-                        if (a1.getClass() == b1.getClass() && Objects.equals(a1.getContentType(), "ARTICLE")) {
-                            if (Integer.compare(a1.getProductName().length(), b1.getProductName().length()) == 0) {
-                                return a1.getProductName().compareTo(b1.getProductName());
-                            }
-                        }
-                        return Integer.compare(b1.getProductName().length(), a1.getProductName().length());
-                    }
-                }
-        );
+        Set<Searchable> result = new TreeSet<Searchable>(new Comp());
         Iterator<Searchable> itr = searchMas.iterator();
         while (itr.hasNext()) {
             Searchable s = itr.next();
@@ -62,5 +49,17 @@ public class SearchEngine {
             throw new BestResultNotFound("Не нашлось подходящей статьи");
         }
         return result;
+    }
+
+    class Comp implements Comparator<Searchable> {
+        @Override
+        public int compare(Searchable a, Searchable b) {
+            if (a.getClass() == b.getClass() && Objects.equals(a.getContentType(), "ARTICLE")) {
+                if (Integer.compare(a.getProductName().length(), b.getProductName().length()) == 0) {
+                    return a.getProductName().compareTo(b.getProductName());
+                }
+            }
+            return Integer.compare(b.getProductName().length(), a.getProductName().length());
+        }
     }
 }
