@@ -3,81 +3,53 @@ package org.skypro.skyshop.basket;
 import org.skypro.skyshop.product.Product;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class ProductBasket {
-    private Map<String, List<Product>> productList;
+    private Map<String, List<Product>> products;
 
     public ProductBasket() {
-        productList = new HashMap<>();
+        products = new HashMap<>();
     }
 
     public void addProduct(Product product) {
-        productList.computeIfAbsent(product.getTitle(), k -> new ArrayList<>()).add(product);
+        products.computeIfAbsent(product.getTitle(), k -> new ArrayList<>()).add(product);
     }
 
     public int getCostProducts() {
-        int result = 0;
-        for (String k : productList.keySet()) {
-            for (Product p : productList.get(k)) {
-                result += p.getPrice();
-            }
-        }
-        return result;
+        return products.values().stream().flatMap(Collection::stream).mapToInt(Product::getPrice).sum();
     }
 
     public void printCheck() {
-        if (productList.size() == 0) {
+        if (products.isEmpty()) {
             System.out.println("В корзине пусто");
             return;
         }
-        for (String k : productList.keySet()) {
-            for (Product p : productList.get(k)) {
-                System.out.println(p.toString());
-            }
-        }
-        System.out.println("Итого: " + getCostProducts());
-        System.out.println("Специальных товаров:\t" + getQuantitySpecialGoods());
+        products.values().stream().flatMap(Collection::stream).forEach(System.out::println);
+        System.out.println("Итого: " + getCostProducts() + "\nСпециальных товаров:\t" + getSpecialCount());
     }
 
     public boolean isProduct(String title) {
-        for (String k : productList.keySet()) {
-            for (Product p : productList.get(k)) {
-                if (p.getTitle().equals(title)) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        return products.values().stream().flatMap(Collection::stream)
+                .anyMatch((p) -> p.getTitle().equals(title));
     }
 
     public void clearBasket() {
-        productList.clear();
+        products.clear();
     }
 
-    private int getQuantitySpecialGoods() {
-        int count = 0;
-        for (String k : productList.keySet()) {
-            for (Product p : productList.get(k)) {
-                if (p != null && p.isSpecial()) {
-                    count++;
-                }
-            }
-        }
-        return count;
+    private long getSpecialCount() {
+        long result = products.values().stream().flatMap(Collection::stream).filter(Product::isSpecial).count();
+        return result;
     }
 
-    public List<Product> delProducts(String name) {
-        List<Product> result = new LinkedList<Product>();
-        if (productList.containsKey(name)) {
-            Iterator<Product> itr = (productList.get(name)).iterator();
-            while (itr.hasNext()) {
-                Product p = itr.next();
-                if (p.getTitle().equals(name)) {
-                    result.add(p);
-                    productList.remove(p);
-                }
-            }
-        }
+    public List<Product> delProducts(String title) {
+        List<Product> result = products.values().stream().flatMap(Collection::stream).filter((p) -> {
+            return p.getTitle().equals(title);
+        }).collect(Collectors.toList());
+        result.forEach((p) -> {
+            products.remove(p.getTitle());
+        });
         return result;
     }
 }
