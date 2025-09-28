@@ -17,9 +17,10 @@ public class App {
         pb.addProduct(new SimpleProduct("lemons", 7));
         pb.addProduct(new DiscountedProduct("eggs", 10, 20));
         List<Product> result = pb.delProducts("eggs");
-        System.out.println(result.size() == 0 ? "Список пуст" : result);
+        System.out.println(result.isEmpty() ? "Список пуст" : result);
         result = pb.delProducts("patato");
-        System.out.println(result.size() == 0 ? "Список пуст" : result);
+        System.out.println(result.isEmpty() ? "Список пуст" : result);
+        pb.printCheck();
 
         SearchEngine se = new SearchEngine();
         se.add(new DiscountedProduct("pears", 2, 50));

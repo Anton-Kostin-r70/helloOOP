@@ -1,9 +1,9 @@
 package org.skypro.skyshop.product;
 
-import org.skypro.skyshop.description.Article;
 import org.skypro.skyshop.exception.BestResultNotFound;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class SearchEngine {
     private Set<Searchable> searchMas;
@@ -13,14 +13,12 @@ public class SearchEngine {
     }
 
     public Set<Searchable> search(String str) {
-        Set<Searchable> result = new TreeSet<Searchable>(new Comp());
-        Iterator<Searchable> itr = searchMas.iterator();
-        while (itr.hasNext()) {
-            Searchable s = itr.next();
-            if (s.getSeachTerm(str).contains(str)) {
-                result.add(s);
-            }
-        }
+        Set<Searchable> result =
+                searchMas.stream().filter((s) -> (s.getSeachTerm(str).contains(str))).collect(
+                        Collectors.toCollection(
+                                () -> new TreeSet<>(new Comp())
+                        )
+                );
         return result;
     }
 
